@@ -1,0 +1,3 @@
+package com.hamzaazman.passwordgenerator.domain.repository
+
+interface MainRepository
