@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.hamzaazman.passwordgenerator.ui.history.HistoryScreen
 import com.hamzaazman.passwordgenerator.ui.password.PasswordScreen
 
 @Composable
@@ -20,6 +21,9 @@ fun NavigationGraph(
     ) {
         composable("Password") {
             PasswordScreen()
+        }
+        composable("History") {
+            HistoryScreen()
         }
     }
 }
