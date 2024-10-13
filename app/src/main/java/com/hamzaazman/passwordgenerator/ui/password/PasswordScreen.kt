@@ -47,7 +47,7 @@ fun PasswordScreen(
 
     LaunchedEffect(copyState) {
         if (copyState) {
-            Toast.makeText(context, "Parola kopyalandı", Toast.LENGTH_SHORT).show()
+            viewModel.setPasswordHistory(password)
             viewModel.resetCopyState()
         }
     }

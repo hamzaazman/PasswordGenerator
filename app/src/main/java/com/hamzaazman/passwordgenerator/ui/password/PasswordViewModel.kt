@@ -3,9 +3,14 @@ package com.hamzaazman.passwordgenerator.ui.password
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.hamzaazman.passwordgenerator.data.model.HistoryEntity
+import com.hamzaazman.passwordgenerator.domain.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PasswordSettings(
@@ -18,7 +23,9 @@ data class PasswordSettings(
 
 
 @HiltViewModel
-class PasswordViewModel @Inject constructor() : ViewModel() {
+class PasswordViewModel @Inject constructor(
+    private val mainRepository: MainRepository
+) : ViewModel() {
 
     private val _passwordSettings = MutableStateFlow(PasswordSettings())
     val passwordSettings: StateFlow<PasswordSettings> get() = _passwordSettings
@@ -47,6 +54,10 @@ class PasswordViewModel @Inject constructor() : ViewModel() {
     private val _copyState = MutableStateFlow(false)
     val copyState: StateFlow<Boolean> get() = _copyState
 
+
+    fun setPasswordHistory(password: String) = viewModelScope.launch(Dispatchers.IO) {
+        mainRepository.insertHistory(HistoryEntity(password = password))
+    }
 
     fun setCopyState(value: Boolean) {
         _copyState.value = value
