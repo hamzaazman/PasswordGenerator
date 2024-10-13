@@ -3,15 +3,16 @@ package com.hamzaazman.passwordgenerator.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.compose.rememberNavController
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import com.hamzaazman.passwordgenerator.ui.navigation.NavigationGraph
-import dagger.hilt.android.AndroidEntryPoint
+import com.hamzaazman.passwordgenerator.ui.password.components.BottomNavigationBar
 import com.hamzaazman.passwordgenerator.ui.theme.MyappTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -20,9 +21,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyappTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val navController = rememberNavController()
-                    val startDestination = "Password"
+                val navController = rememberNavController()
+                val startDestination = "Password"
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        BottomNavigationBar(navController = navController)
+                    }
+                ) { innerPadding ->
                     NavigationGraph(
                         navController = navController,
                         startDestination = startDestination,
