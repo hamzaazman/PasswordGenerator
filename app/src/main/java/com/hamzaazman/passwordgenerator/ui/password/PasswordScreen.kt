@@ -2,23 +2,30 @@ package com.hamzaazman.passwordgenerator.ui.password
 
 import android.content.Context
 import android.os.Vibrator
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,23 +33,22 @@ import com.hamzaazman.passwordgenerator.ui.password.components.PasswordDisplay
 import com.hamzaazman.passwordgenerator.ui.password.components.PasswordLengthSlider
 import com.hamzaazman.passwordgenerator.ui.password.components.SelectPasswordCharacter
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordScreen(
+    modifier: Modifier = Modifier,
     viewModel: PasswordViewModel = hiltViewModel()
 ) {
 
-    val password by viewModel.password
-    val passwordSettings by viewModel.passwordSettings.collectAsState()
-    /*
-      val passwordLength by viewModel.passwordLength
-      val useUpperCase by viewModel.useUpperCase
-      val useLowerCase by viewModel.useLowerCase
-      val useDigits by viewModel.useDigits
-      val useSpecialChars by viewModel.useSpecialChars
-  */
     val context = LocalContext.current
-    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    val password by viewModel.password
+
+    val passwordSettings by viewModel.passwordSettings.collectAsState()
     val copyState by viewModel.copyState.collectAsState()
+
+    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
 
     LaunchedEffect(copyState) {
@@ -52,13 +58,49 @@ fun PasswordScreen(
         }
     }
 
+    Scaffold(
+        topBar = {
+            MediumTopAppBar(
+                title = { Text(text = "Password Generator") },
+                navigationIcon = {},
+                actions = {},
+                scrollBehavior = scrollBehavior
+            )
+        },
+        content = { innerPadding ->
+            PasswordContent(
+                modifier = modifier.padding(innerPadding),
+                password = password,
+                passwordSettings = passwordSettings,
+                viewModel = viewModel,
+                context = context,
+                vibrator = vibrator,
+                scrollBehavior = scrollBehavior
+            )
+        }
+    )
 
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PasswordContent(
+    modifier: Modifier,
+    password: String,
+    passwordSettings: PasswordSettings,
+    viewModel: PasswordViewModel,
+    context: Context,
+    vibrator: Vibrator,
+    scrollBehavior: TopAppBarScrollBehavior
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
+            .padding(8.dp)
             .fillMaxSize()
-            .padding(12.dp),
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
         PasswordDisplay(
@@ -149,7 +191,7 @@ fun PasswordScreen(
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Button(onClick = {
             viewModel.updatePassword()
@@ -159,15 +201,6 @@ fun PasswordScreen(
 
     }
 
-
-}
-
-
-fun generateNumericPassword(length: Int): String {
-    val digits = "0123456789"
-    return (1..length)
-        .map { digits.random() }
-        .joinToString("")
 }
 
 
