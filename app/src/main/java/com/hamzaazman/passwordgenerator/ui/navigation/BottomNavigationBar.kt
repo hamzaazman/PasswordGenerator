@@ -1,4 +1,4 @@
-package com.hamzaazman.passwordgenerator.ui.password.components
+package com.hamzaazman.passwordgenerator.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History

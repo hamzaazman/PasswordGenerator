@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,11 +24,12 @@ fun PasswordDisplay(
     onCopyClicked: () -> Unit
 ) {
     TextField(
+        label = { Text("Parola") },
         singleLine = false,
-        maxLines = 8,
+        maxLines = Int.MAX_VALUE,
         readOnly = true,
         value = password,
-        textStyle = TextStyle(fontSize = 20.sp),
+        textStyle = TextStyle(fontSize = 24.sp),
         onValueChange = {},
         modifier = Modifier
             .fillMaxWidth()

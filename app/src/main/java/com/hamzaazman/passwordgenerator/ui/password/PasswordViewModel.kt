@@ -33,24 +33,6 @@ class PasswordViewModel @Inject constructor(
     private val _password = mutableStateOf(generateNumericPassword(6))
     val password: State<String> get() = _password
 
-    /*
-    private val _passwordLength = mutableIntStateOf(6)
-    val passwordLength: State<Int> get() = _passwordLength
-
-    private val _useUpperCase = mutableStateOf(false)
-    val useUpperCase: State<Boolean> get() = _useUpperCase
-
-    private val _useLowerCase = mutableStateOf(false)
-    val useLowerCase: State<Boolean> get() = _useLowerCase
-
-    private val _useDigits = mutableStateOf(true)
-    val useDigits: State<Boolean> get() = _useDigits
-
-    private val _useSpecialChars = mutableStateOf(false)
-    val useSpecialChars: State<Boolean> get() = _useSpecialChars
-
-
-     */
     private val _copyState = MutableStateFlow(false)
     val copyState: StateFlow<Boolean> get() = _copyState
 
@@ -79,34 +61,29 @@ class PasswordViewModel @Inject constructor(
 
     fun setPasswordLength(length: Int) {
         _passwordSettings.value = _passwordSettings.value.copy(passwordLength = length)
-        //_passwordLength.intValue = length
         updatePassword()
     }
 
     fun setUseUpperCase(value: Boolean) {
         _passwordSettings.value = _passwordSettings.value.copy(useUpperCase = value)
-        //_useUpperCase.value = value
         ensureAtLeastOneOptionSelected()
         updatePassword()
     }
 
     fun setUseLowerCase(value: Boolean) {
         _passwordSettings.value = _passwordSettings.value.copy(useLowerCase = value)
-        //_useLowerCase.value = value
         ensureAtLeastOneOptionSelected()
         updatePassword()
     }
 
     fun setUseDigits(value: Boolean) {
         _passwordSettings.value = _passwordSettings.value.copy(useDigits = value)
-        // _useDigits.value = value
         ensureAtLeastOneOptionSelected()
         updatePassword()
     }
 
     fun setUseSpecialChars(value: Boolean) {
         _passwordSettings.value = _passwordSettings.value.copy(useSpecialChars = value)
-        // _useSpecialChars.value = value
         ensureAtLeastOneOptionSelected()
         updatePassword()
     }
@@ -123,6 +100,13 @@ class PasswordViewModel @Inject constructor(
                 useLowerCase = true,
             )
         }
+    }
+
+    private fun generateNumericPassword(length: Int): String {
+        val digits = "0123456789"
+        return (1..length)
+            .map { digits.random() }
+            .joinToString("")
     }
 
     private fun generatePassword(
