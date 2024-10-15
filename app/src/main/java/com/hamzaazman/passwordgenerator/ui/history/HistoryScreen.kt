@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hamzaazman.passwordgenerator.data.model.HistoryEntity
@@ -84,7 +85,8 @@ fun HistoryScreen(
                 HistoryContent(
                     modifier = modifier.padding(innerPadding),
                     history.history,
-                    scrollBehavior
+                    scrollBehavior,
+                    viewModel
                 )
             }
 
@@ -99,7 +101,10 @@ fun HistoryContent(
     modifier: Modifier,
     history: List<HistoryEntity>,
     scrollBehavior: TopAppBarScrollBehavior,
+    viewModel: HistoryViewModel
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -112,20 +117,37 @@ fun HistoryContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(history) {
-                HistoryItem(historyEntity = it)
+                HistoryItem(
+                    historyEntity = it,
+                    onCopyPassword = {
+                        viewModel.performAction(
+                            Action.CopyPassword(
+                                password = it.password,
+                                context = context
+                            )
+                        )
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun HistoryItem(modifier: Modifier = Modifier, historyEntity: HistoryEntity) {
+fun HistoryItem(
+    modifier: Modifier = Modifier,
+    historyEntity: HistoryEntity,
+    onCopyPassword: () -> Unit = {}
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(4.dp),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
+        onClick = {
+            onCopyPassword()
+        }
     ) {
         Column(
             modifier = Modifier
