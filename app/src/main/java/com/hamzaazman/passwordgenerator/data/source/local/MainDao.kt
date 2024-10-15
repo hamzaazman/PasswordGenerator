@@ -24,4 +24,7 @@ interface MainDao {
     @Query("DELETE FROM history WHERE id = :id")
     suspend fun deleteById(id: Int)
 
+    @Query("DELETE FROM history")
+    suspend fun deleteAll()
+
 }
