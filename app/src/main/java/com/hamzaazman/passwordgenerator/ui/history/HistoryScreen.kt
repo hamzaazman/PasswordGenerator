@@ -36,12 +36,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hamzaazman.passwordgenerator.data.model.HistoryEntity
+import com.hamzaazman.passwordgenerator.ui.history.components.EmptyHistory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
-    viewModel: HistoryViewModel = hiltViewModel()
+    viewModel: HistoryViewModel = hiltViewModel(),
 ) {
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -67,13 +68,7 @@ fun HistoryScreen(
                         DropdownMenuItem(
                             text = { Text("Delete") },
                             onClick = {
-                                // Handle delete action
-                                expanded = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Another Action") },
-                            onClick = {
+                                viewModel.performAction(Action.ClearHistory)
                                 expanded = false
                             }
                         )
@@ -83,7 +78,16 @@ fun HistoryScreen(
             )
         },
         content = { innerPadding ->
-            HistoryContent(modifier = modifier.padding(innerPadding), history, scrollBehavior)
+            if (history.history.isEmpty()) {
+                EmptyHistory(modifier = modifier.padding(innerPadding))
+            } else {
+                HistoryContent(
+                    modifier = modifier.padding(innerPadding),
+                    history.history,
+                    scrollBehavior
+                )
+            }
+
         }
     )
 
