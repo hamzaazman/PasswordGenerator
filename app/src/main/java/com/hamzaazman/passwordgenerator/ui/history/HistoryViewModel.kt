@@ -1,5 +1,6 @@
 package com.hamzaazman.passwordgenerator.ui.history
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hamzaazman.passwordgenerator.data.model.HistoryEntity
@@ -47,9 +48,16 @@ class HistoryViewModel @Inject constructor(
     fun performAction(action: Action) {
         when (action) {
             is Action.ClearHistory -> clearHistory()
+            is Action.CopyPassword -> copyToClipboard(action.context, action.password)
         }
     }
 
+    private fun copyToClipboard(context: android.content.Context, text: String) {
+        val clipboard =
+            context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+        val clip = android.content.ClipData.newPlainText("password", text)
+        clipboard.setPrimaryClip(clip)
+    }
 
 }
 
@@ -59,4 +67,5 @@ data class HistoryState(
 
 sealed class Action {
     data object ClearHistory : Action()
+    data class CopyPassword(val password: String, val context: Context) : Action()
 }
